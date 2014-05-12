@@ -246,8 +246,11 @@ class Application extends SilexApplication
                 $apiProblem->set('detail', $e->getMessage());
             }
 
+            $data = $apiProblem->toArray();
+            // making type a URL, to a temporarily fake page
+            $data['type'] = 'http://localhost:8000/api/docs/errors#'.$data['type'];
             $response = new JsonResponse(
-                $apiProblem->toArray(),
+                $data,
                 $statusCode
             );
             $response->headers->set('Content-Type', 'application/problem+json');
