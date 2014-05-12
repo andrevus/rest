@@ -26,6 +26,7 @@ use KnpU\CodeBattle\Repository\ProgrammerRepository;
 use KnpU\CodeBattle\Battle\BattleManager;
 use Silex\Provider\ValidatorServiceProvider;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Validator\Mapping\ClassMetadataFactory;
 use Symfony\Component\Validator\Mapping\Loader\AnnotationLoader;
 
@@ -233,6 +234,16 @@ class Application extends SilexApplication
                     null,
                     $statusCode
                 );
+            }
+
+            /*
+             * If it's an HttpException message (e.g. for 404, 403),
+             * we'll say as a rule that the exception message is safe
+             * for the client. Otherwise, it could be some sensitive
+             * low-level exception, which should *not* be exposed
+             */
+            if ($e instanceof HttpException) {
+                $apiProblem->set('detail', $e->getMessage());
             }
 
             $response = new JsonResponse(
