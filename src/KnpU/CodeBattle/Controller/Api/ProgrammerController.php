@@ -164,9 +164,8 @@ class ProgrammerController extends BaseController
     private function handleValidationResponse(array $errors)
     {
         $apiProblem = new ApiProblem(
-            'validation_error',
-            400,
-            'There was a validation error'
+            ApiProblem::TYPE_VALIDATION_ERROR,
+            400
         );
         $apiProblem->set('errors', $errors);
 
