@@ -3,6 +3,7 @@
 namespace KnpU\CodeBattle\Controller\Api;
 
 use KnpU\CodeBattle\Api\ApiProblem;
+use KnpU\CodeBattle\Api\ApiProblemException;
 use KnpU\CodeBattle\Controller\BaseController;
 use KnpU\CodeBattle\Model\Programmer;
 use Silex\Application;
@@ -129,7 +130,11 @@ class ProgrammerController extends BaseController
         $isNew = !$programmer->id;
 
         if ($data === null) {
-            throw new HttpException(400, sprintf('Invalid JSON: '.$request->getContent()));
+            $problem = new ApiProblem(
+                ApiProblem::TYPE_INVALID_REQUEST_BODY_FORMAT,
+                400
+            );
+            throw new ApiProblemException($problem);
         }
 
         // determine which properties should be changeable on this request
